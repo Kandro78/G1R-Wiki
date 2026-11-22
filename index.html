@@ -1,0 +1,326 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G1R Wiki</title>
+<style>
+/* Layout: Wikipedia-style article page; logo + nav column on the left, article with infobox, contents box and wiki galleries */
+:root {
+  --bg: #ffffff; --fg: #202122; --muted: #54595d; --link: #3366cc; --link-visited: #795cb2;
+  --border: #a2a9b1; --border-soft: #c8ccd1; --panel: #f8f9fa; --panel-2: #eaecf0;
+  --tested: #14866d; --read: #3366cc; --guess: #ac6600; --shade: rgba(0,0,0,.82);
+  --serif: 'Linux Libertine', 'Libertinus Serif', 'Georgia', 'Times', serif;
+  --sans: -apple-system, 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif;
+  --mono: 'Menlo', 'Consolas', 'Liberation Mono', monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #101418; --fg: #eaecf0; --muted: #a2a9b1; --link: #88a3e8; --link-visited: #a799cd;
+  --border: #72777d; --border-soft: #404244; --panel: #1b1f23; --panel-2: #27292d;
+  --tested: #3fbf9f; --read: #88a3e8; --guess: #e0a346; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #101418; --fg: #eaecf0; --muted: #a2a9b1; --link: #88a3e8; --link-visited: #a799cd;
+  --border: #72777d; --border-soft: #404244; --panel: #1b1f23; --panel-2: #27292d;
+  --tested: #3fbf9f; --read: #88a3e8; --guess: #e0a346; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 15px/1.6 var(--sans); }
+a { color: var(--link); text-decoration: none; } a:hover { text-decoration: underline; }
+a:focus-visible, button:focus-visible, input:focus-visible, .thumb img:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+
+.page { display: grid; grid-template-columns: 176px minmax(0, 1fr); max-width: 1320px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 48px; gap: 0 28px; }
+header.top { grid-column: 1 / -1; display: flex; align-items: center; gap: 20px; padding-block: 14px; border-bottom: 1px solid var(--border-soft); flex-wrap: wrap; }
+.logo { display: flex; align-items: center; gap: 10px; color: var(--fg); }
+.logo:hover { text-decoration: none; }
+.logo svg { width: 42px; height: 42px; flex: none; }
+.logo b { font: 400 1.45rem/1 var(--serif); letter-spacing: .02em; display: block; }
+.logo small { font-size: .72rem; color: var(--muted); letter-spacing: .04em; }
+.search { position: relative; flex: 1 1 260px; max-width: 460px; margin-left: auto; }
+.search input { width: 100%; box-sizing: border-box; padding: 7px 10px; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--border); border-radius: 2px; }
+.search ul { position: absolute; z-index: 20; left: 0; right: 0; top: 100%; margin: 2px 0 0; padding: 4px 0; list-style: none; background: var(--bg); border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,.15); max-height: 60vh; overflow: auto; }
+.search li a { display: block; padding: 5px 10px; color: var(--fg); }
+.search li a small { color: var(--muted); display: block; }
+.search li a:hover, .search li a.on { background: var(--panel-2); text-decoration: none; }
+
+nav.side { padding-top: 22px; font-size: .88rem; }
+nav.side h2 { font: 600 .72rem/1 var(--sans); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 18px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-soft); }
+nav.side h2:first-child { margin-top: 0; }
+nav.side ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+nav.side a.cur { color: var(--fg); font-weight: 600; }
+
+main { min-width: 0; padding-top: 18px; }
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); font-size: .88rem; }
+.tabs button { font: inherit; background: none; border: 0; padding: 6px 10px; color: var(--link); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--fg); }
+.tabs .spacer { flex: 1; }
+h1.title { font: 400 2rem/1.25 var(--serif); margin: 16px 0 0; padding-bottom: 4px; border-bottom: 1px solid var(--border); text-wrap: balance; }
+.from { color: var(--muted); font-size: .82rem; margin: 6px 0 14px; }
+article { overflow-wrap: break-word; }
+article h2 { font: 400 1.5rem/1.3 var(--serif); margin: 26px 0 10px; padding-bottom: 3px; border-bottom: 1px solid var(--border); text-wrap: balance; clear: both; }
+article h3 { font: 700 1.05rem/1.4 var(--sans); margin: 22px 0 8px; }
+article h4 { font: 700 .95rem/1.4 var(--sans); margin: 16px 0 6px; }
+article h4 small { font-weight: 400; color: var(--muted); font-family: var(--mono); font-size: .78rem; margin-left: 6px; }
+article p, article li { max-width: 78ch; }
+article ul { padding-left: 1.4em; }
+article li { margin: 3px 0; }
+code { font: .86em var(--mono); background: var(--panel); border: 1px solid var(--border-soft); border-radius: 2px; padding: 1px 4px; overflow-wrap: anywhere; }
+pre.source { font: .82rem/1.5 var(--mono); background: var(--panel); border: 1px solid var(--border-soft); padding: 14px; overflow-x: auto; white-space: pre-wrap; }
+.path { font-family: var(--mono); font-size: .86em; color: var(--muted); border-bottom: 1px dotted var(--border); }
+.badge { font: 700 .68rem/1 var(--sans); text-transform: uppercase; letter-spacing: .05em; padding: 2px 5px 1px; border-radius: 2px; border: 1px solid currentColor; vertical-align: 1px; white-space: nowrap; }
+.badge.tested { color: var(--tested); } .badge.read { color: var(--read); } .badge.guess { color: var(--guess); }
+.table-wrap { overflow-x: auto; margin: 12px 0; }
+table.wikitable { border-collapse: collapse; background: var(--panel); border: 1px solid var(--border); font-size: .9rem; }
+.wikitable th, .wikitable td { border: 1px solid var(--border); padding: 5px 9px; text-align: left; vertical-align: top; }
+.wikitable th { background: var(--panel-2); }
+
+.infobox { float: right; clear: right; width: 290px; margin: 4px 0 14px 22px; border: 1px solid var(--border); background: var(--panel); font-size: .84rem; }
+.infobox .ib-title { font: 400 1.15rem/1.3 var(--serif); text-align: center; padding: 8px; }
+.infobox figure { margin: 0 8px 6px; }
+.infobox figure img { width: 100%; display: block; cursor: zoom-in; }
+.infobox figcaption { color: var(--muted); font-size: .78rem; text-align: center; padding: 4px 2px 0; }
+.infobox table { width: 100%; border-collapse: collapse; }
+.infobox th, .infobox td { padding: 4px 8px; vertical-align: top; text-align: left; border-top: 1px solid var(--border-soft); }
+.infobox th { width: 42%; font-weight: 600; }
+.toc { display: inline-block; min-width: 220px; max-width: 100%; box-sizing: border-box; border: 1px solid var(--border); background: var(--panel); padding: 8px 14px 10px; margin: 8px 0 6px; font-size: .88rem; }
+.toc .toc-head { font-weight: 700; text-align: center; margin-bottom: 4px; }
+.toc ol { margin: 0; padding-left: 0; list-style: none; } .toc ol ol { padding-left: 1.4em; }
+.toc li { margin: 1px 0; }
+.toc .num { color: var(--fg); margin-right: 6px; font-variant-numeric: tabular-nums; }
+
+.gallery-block { margin: 18px 0 6px; clear: both; }
+.gallery-block > p.note { color: var(--muted); font-size: .88rem; margin: 0 0 8px; }
+ul.gallery { list-style: none; margin: 6px 0 10px; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 8px; }
+ul.gallery.wide { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+ul.gallery.pairs { grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); }
+.thumb { margin: 0; border: 1px solid var(--border-soft); background: var(--panel); padding: 5px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.thumb img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: var(--panel-2); cursor: zoom-in; }
+ul.wide .thumb img { aspect-ratio: auto; max-height: 340px; object-fit: contain; }
+.thumb figcaption { font-size: .78rem; line-height: 1.35; color: var(--muted); }
+.pair { border: 1px solid var(--border-soft); background: var(--panel); padding: 5px; }
+.pair .two { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.pair .two figure { margin: 0; }
+.pair .two figure img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; cursor: zoom-in; background: var(--panel-2); }
+.pair .two figcaption { font: 700 .68rem/1 var(--sans); text-transform: uppercase; letter-spacing: .05em; padding: 4px 0 0; color: var(--muted); }
+.pair > .cap { font-size: .8rem; padding-top: 4px; }
+details.book { border-top: 1px solid var(--border-soft); }
+details.book summary { cursor: pointer; padding: 7px 0; font-weight: 600; }
+details.book summary small { font-weight: 400; color: var(--muted); font-family: var(--mono); font-size: .78rem; margin-left: 6px; }
+details.book summary .n { font-weight: 400; color: var(--muted); font-size: .82rem; margin-left: 6px; }
+
+.featured { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; margin: 14px 0 4px; }
+.featured section { border: 1px solid var(--border-soft); background: var(--panel); padding: 10px 14px 12px; min-width: 0; }
+.featured h3 { margin: 0 0 8px; font: 400 1.1rem/1.3 var(--serif); padding-bottom: 4px; border-bottom: 1px solid var(--border-soft); }
+.featured img { width: 100%; display: block; cursor: zoom-in; }
+.featured p { font-size: .86rem; margin: 6px 0 0; }
+footer { grid-column: 2; margin-top: 36px; padding-top: 10px; border-top: 1px solid var(--border-soft); font-size: .78rem; color: var(--muted); }
+
+dialog.lb { border: 0; padding: 0; background: transparent; max-width: 100vw; max-height: 100vh; width: 100vw; height: 100vh; }
+dialog.lb::backdrop { background: var(--shade); }
+.lb-in { height: 100%; display: grid; grid-template-rows: 1fr auto; place-items: center; padding: max(12px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); box-sizing: border-box; gap: 10px; }
+.lb-in img { max-width: 100%; max-height: calc(100vh - 110px); object-fit: contain; box-shadow: 0 6px 30px rgba(0,0,0,.5); }
+.lb-bar { display: flex; gap: 12px; align-items: center; color: #eaecf0; font-size: .9rem; max-width: 100%; flex-wrap: wrap; justify-content: center; }
+.lb-bar button { font: inherit; color: #eaecf0; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.3); border-radius: 2px; padding: 5px 12px; cursor: pointer; }
+.lb-bar .cap { min-width: 0; text-align: center; }
+
+@media (max-width: 760px) {
+  .page { grid-template-columns: minmax(0, 1fr); }
+  nav.side { padding-top: 10px; }
+  nav.side h2 { display: none; }
+  nav.side ul { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+  nav.side ul + h2 + ul { display: none; }
+  .infobox { float: none; width: auto; margin: 10px 0; }
+  footer { grid-column: 1; }
+  h1.title { font-size: 1.6rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="page">
+  <header class="top">
+    <a class="logo" href="#main" aria-label="G1R Wiki, main page">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14 13h13a7 7 0 0 1 0 14H14zM14 27v9M27 27l7 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M33 12l2 4 4 .6-3 2.8.8 4-3.8-2-3.8 2 .8-4-3-2.8 4-.6z" fill="currentColor" opacity=".55"/></svg>
+      <span><b>G1R Wiki</b><small>Gothic 1 Remake · testing and modding notes</small></span>
+    </a>
+    <div class="search" role="search">
+      <input id="q" type="search" placeholder="Search G1R Wiki" aria-label="Search the wiki" autocomplete="off">
+      <ul id="qres" hidden></ul>
+    </div>
+  </header>
+  <nav class="side" aria-label="Wiki">
+    <h2>Navigation</h2>
+    <ul id="nav"></ul>
+    <h2>On this page</h2>
+    <ul id="navsec"></ul>
+  </nav>
+  <main>
+    <div class="tabs" role="tablist">
+      <button id="tab-art" role="tab" aria-selected="true">Article</button>
+      <button id="tab-src" role="tab" aria-selected="false">Source</button>
+      <span class="spacer"></span>
+    </div>
+    <h1 class="title" id="ptitle"></h1>
+    <div class="from" id="pfrom"></div>
+    <article id="art"></article>
+  </main>
+  <footer id="foot"></footer>
+</div>
+
+<dialog class="lb" id="lb" aria-label="Picture viewer">
+  <div class="lb-in">
+    <img id="lbimg" alt="">
+    <div class="lb-bar">
+      <button id="lbprev" aria-label="Previous picture">‹ Prev</button>
+      <span class="cap" id="lbcap"></span>
+      <button id="lbnext" aria-label="Next picture">Next ›</button>
+      <button id="lbclose">Close</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="content.js"></script>
+<script>
+(() => {
+  const W = window.WIKI, $ = s => document.querySelector(s);
+  const bySlug = Object.fromEntries(W.pages.map(p => [p.slug, p]));
+  const fileSlug = Object.fromEntries(W.pages.map(p => [p.file, p.slug]));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const slugify = s => s.toLowerCase().replace(/<[^>]+>/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  let view = 'art';
+
+  const renderer = new marked.Renderer();
+  renderer.link = (href, title, text) => {
+    const f = href.split('#')[0];
+    if (fileSlug[f]) return `<a href="#${fileSlug[f]}">${text}</a>`;
+    if (/^https?:/.test(href)) return `<a href="${esc(href)}" target="_blank" rel="noopener">${text}</a>`;
+    return `<span class="path" title="${esc(href)} (file in the repo, not part of the site)">${text}</span>`;
+  };
+  renderer.table = (header, body) => `<div class="table-wrap"><table class="wikitable"><thead>${header}</thead><tbody>${body}</tbody></table></div>`;
+  marked.use({ renderer, gfm: true });
+
+  const thumb = (im, cls = '') => `<li><figure class="thumb ${cls}"><img loading="lazy" tabindex="0" src="${im.src}" alt="${esc(im.cap)}" data-cap="${esc(im.cap)}"><figcaption>${esc(im.cap)}</figcaption></figure></li>`;
+  const fig = (im, label) => `<figure><img loading="lazy" tabindex="0" src="${im.src}" alt="${esc(im.cap)}" data-cap="${esc(im.cap)}"><figcaption>${label}</figcaption></figure>`;
+
+  function galleryHTML(g) {
+    let h = `<section class="gallery-block" data-gallery><h3 id="${g.id}">${esc(g.title)}</h3><p class="note">${esc(g.note)}</p>`;
+    if (g.lead) h += `<ul class="gallery wide">${g.lead.map(i => thumb(i)).join('')}</ul>`;
+    for (const b of g.groups) {
+      const n = g.kind === 'pairs' ? b.pairs.length : b.imgs.length;
+      const unit = g.kind === 'pairs' ? 'spread' : 'spread';
+      h += `<details class="book"${b.title === 'Slave' ? ' open' : ''}><summary>${esc(b.title)}${b.sub ? `<small>${esc(b.sub)}</small>` : ''}<span class="n">${n} ${unit}${n === 1 ? '' : 's'}</span></summary>`;
+      if (g.kind === 'pairs') {
+        h += `<ul class="gallery pairs">${b.pairs.map(p => `<li class="pair"><div class="two">${fig(p.before, 'Before')}${fig(p.after, 'After')}</div><div class="cap">${esc(p.before.cap.replace(/, before the repair$/, ''))}</div></li>`).join('')}</ul>`;
+      } else {
+        h += `<ul class="gallery">${b.imgs.map(i => thumb(i)).join('')}</ul>`;
+      }
+      h += `</details>`;
+    }
+    return h + `</section>`;
+  }
+
+  function insertGalleries(root, slug) {
+    for (const g of (W.galleries[slug] || [])) {
+      const h2 = [...root.querySelectorAll('h2')].find(h => h.textContent.startsWith(g.after));
+      if (!h2) continue;
+      let end = h2.nextElementSibling;
+      while (end && end.tagName !== 'H2') end = end.nextElementSibling;
+      const tpl = document.createElement('template'); tpl.innerHTML = galleryHTML(g);
+      root.insertBefore(tpl.content, end);
+    }
+  }
+
+  function countImgs(slug) {
+    let n = 0;
+    for (const g of (W.galleries[slug] || [])) { n += (g.lead || []).length; for (const b of g.groups) n += g.kind === 'pairs' ? b.pairs.length * 2 : b.imgs.length; }
+    return n;
+  }
+
+  function infobox(p) {
+    const lead = W.lead[p.slug], rows = Object.entries(p.info);
+    if (!lead && !rows.length) return '';
+    const n = countImgs(p.slug);
+    if (n) rows.push(['Screenshots', String(n)]);
+    rows.push(['Source file', `<code>${esc(p.file)}</code>`]);
+    rows.push(['Last edited', new Date(p.edited * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })]);
+    return `<aside class="infobox"><div class="ib-title">${esc(p.title)}</div>${lead ? `<figure><img src="${lead.src}" alt="${esc(lead.cap)}" data-cap="${esc(lead.cap)}" tabindex="0"><figcaption>${esc(lead.cap)}</figcaption></figure>` : ''}<table>${rows.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${v.startsWith('<') ? v : esc(v)}</td></tr>`).join('')}</table></aside>`;
+  }
+
+  function featured() {
+    const g = W.galleries.books || [], rep = g.find(x => x.kind === 'pairs');
+    const pair = rep && rep.groups.find(b => b.title === 'Slave')?.pairs[2];
+    const over = g.find(x => x.id === 'gallery-books')?.lead?.[0];
+    let h = '<div class="featured">';
+    if (pair) h += `<section data-gallery><h3>Featured: the book bug</h3><div class="pair"><div class="two">${fig(pair.before, 'Before')}${fig(pair.after, 'After')}</div></div><p>Slave, spread 3: blank pages in the unpatched game, pictures back after the repair. <a href="#books">Read the article</a>.</p></section>`;
+    if (over) h += `<section data-gallery><h3>From the galleries</h3><img loading="lazy" tabindex="0" src="${over.src}" alt="${esc(over.cap)}" data-cap="${esc(over.cap)}"><p>All 46 books were opened by the test driver and shot spread by spread. <a href="#books">See every book</a>.</p></section>`;
+    return h + '</div>';
+  }
+
+  function render() {
+    const slug = bySlug[location.hash.slice(1)] ? location.hash.slice(1) : 'main', p = bySlug[slug];
+    document.title = slug === 'main' ? 'G1R Wiki' : `${p.title} – G1R Wiki`;
+    $('#ptitle').textContent = slug === 'main' ? 'Welcome to the G1R Wiki' : p.title;
+    $('#pfrom').textContent = view === 'src' ? `Markdown source of ${p.file}` : 'From G1R Wiki, the Gothic 1 Remake testing and modding notebook';
+    $('#nav').innerHTML = W.pages.map(q => `<li><a href="#${q.slug}" class="${q.slug === slug ? 'cur' : ''}">${esc(q.title)}</a></li>`).join('');
+    $('#tab-art').setAttribute('aria-selected', view === 'art'); $('#tab-src').setAttribute('aria-selected', view === 'src');
+    const art = $('#art');
+    if (view === 'src') { art.innerHTML = `<pre class="source">${esc(p.md)}</pre>`; $('#navsec').innerHTML = ''; return; }
+    let md = p.md.replace(/^# .*\n+/, '');
+    art.innerHTML = infobox(p) + marked.parse(md);
+    art.querySelectorAll('strong').forEach(s => { const t = s.textContent.trim().toLowerCase(); if (['tested', 'read', 'guess'].includes(t)) { s.className = 'badge ' + t; } });
+    if (slug === 'main') { const first = art.querySelector('h2'); const tpl = document.createElement('template'); tpl.innerHTML = featured(); art.insertBefore(tpl.content, first); }
+    insertGalleries(art, slug);
+    const heads = [...art.querySelectorAll('h2, h3')].filter(h => !h.closest('.featured'));
+    heads.forEach(h => { if (!h.id) h.id = slugify(h.textContent); });
+    $('#navsec').innerHTML = heads.filter(h => h.tagName === 'H2').map(h => `<li><a href="#${slug}" data-go="${h.id}">${esc(h.textContent)}</a></li>`).join('');
+    if (heads.length > 2) {
+      let n2 = 0, n3 = 0, ol = '<ol>', open = false;
+      for (const h of heads) {
+        if (h.tagName === 'H2') { if (open) { ol += '</ol>'; open = false; } ol += (n2 ? '</li>' : '') + `<li><a href="#${slug}" data-go="${h.id}"><span class="num">${++n2}</span>${esc(h.textContent)}</a>`; n3 = 0; }
+        else { if (!open) { ol += '<ol>'; open = true; } ol += `<li><a href="#${slug}" data-go="${h.id}"><span class="num">${n2}.${++n3}</span>${esc(h.textContent)}</a></li>`; }
+      }
+      ol += (open ? '</ol>' : '') + '</li></ol>';
+      const toc = document.createElement('div'); toc.className = 'toc'; toc.innerHTML = `<div class="toc-head">Contents</div>${ol}`;
+      const first = art.querySelector(':scope > h2, :scope > .featured');
+      art.insertBefore(toc, first);
+    }
+    $('#foot').innerHTML = `This page was last edited on ${new Date(p.edited * 1000).toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}. Built from <code>Gothic 1 Remake/wiki/${esc(p.file)}</code>. Game 1.1 screenshots taken with the test driver. This is an unofficial modding notebook, not made, endorsed or supported by THQ Nordic.`;
+  }
+
+  document.addEventListener('click', e => {
+    const go = e.target.closest('[data-go]');
+    if (go) { e.preventDefault(); document.getElementById(go.dataset.go)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); const d = document.getElementById(go.dataset.go)?.closest('details'); if (d) d.open = true; return; }
+    const img = e.target.closest('#art img[data-cap]');
+    if (img) openLb(img);
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches?.('#art img[data-cap]')) openLb(e.target); });
+
+  let lbList = [], lbI = 0;
+  const lb = $('#lb');
+  function openLb(img) {
+    const scope = img.closest('[data-gallery]') || img.closest('.infobox') || $('#art');
+    lbList = [...scope.querySelectorAll('img[data-cap]')]; lbI = lbList.indexOf(img); showLb(); lb.showModal();
+  }
+  function showLb() { const im = lbList[lbI]; $('#lbimg').src = im.src; $('#lbimg').alt = im.dataset.cap; $('#lbcap').textContent = `${im.dataset.cap} (${lbI + 1} of ${lbList.length})`; $('#lbprev').disabled = lbI === 0; $('#lbnext').disabled = lbI === lbList.length - 1; }
+  const step = d => { const j = lbI + d; if (j >= 0 && j < lbList.length) { lbI = j; showLb(); } };
+  $('#lbprev').onclick = () => step(-1); $('#lbnext').onclick = () => step(1); $('#lbclose').onclick = () => lb.close();
+  lb.addEventListener('click', e => { if (e.target === lb || e.target.classList.contains('lb-in')) lb.close(); });
+  lb.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') step(-1); if (e.key === 'ArrowRight') step(1); });
+
+  $('#tab-art').onclick = () => { view = 'art'; render(); };
+  $('#tab-src').onclick = () => { view = 'src'; render(); };
+  addEventListener('hashchange', () => { view = 'art'; render(); scrollTo(0, 0); });
+
+  // search over page titles and headings
+  const index = W.pages.flatMap(p => [{ slug: p.slug, label: p.title, sub: 'Page', go: '' }, ...[...p.md.matchAll(/^#{2,3} (.+)$/gm)].map(m => ({ slug: p.slug, label: m[1], sub: p.title, go: slugify(m[1]) })), ...((W.galleries[p.slug] || []).map(g => ({ slug: p.slug, label: g.title, sub: p.title + ' · gallery', go: g.id })))]);
+  const q = $('#q'), qres = $('#qres');
+  let hits = [];
+  q.addEventListener('input', () => {
+    const t = q.value.trim().toLowerCase();
+    hits = t ? index.filter(x => x.label.toLowerCase().includes(t)).slice(0, 12) : [];
+    if (t && !hits.length) hits = W.pages.filter(p => p.md.toLowerCase().includes(t)).map(p => ({ slug: p.slug, label: p.title, sub: 'mentions “' + q.value.trim() + '”', go: '' }));
+    qres.innerHTML = hits.map((h, i) => `<li><a href="#${h.slug}" data-hit="${i}"${i === 0 ? ' class="on"' : ''}>${esc(h.label)}<small>${esc(h.sub)}</small></a></li>`).join('') || (t ? '<li><a>No match</a></li>' : '');
+    qres.hidden = !t;
+  });
+  const pick = h => { qres.hidden = true; q.value = ''; if (location.hash.slice(1) !== h.slug) { location.hash = h.slug; } view = 'art'; render(); if (h.go) setTimeout(() => { const el = document.getElementById(h.go); if (el) { el.closest('details')?.setAttribute('open', ''); el.scrollIntoView({ block: 'start' }); } }, 30); };
+  q.addEventListener('keydown', e => { if (e.key === 'Enter' && hits[0]) { e.preventDefault(); pick(hits[0]); } if (e.key === 'Escape') { qres.hidden = true; } });
+  qres.addEventListener('click', e => { const a = e.target.closest('[data-hit]'); if (a) { e.preventDefault(); pick(hits[+a.dataset.hit]); } });
+  document.addEventListener('click', e => { if (!e.target.closest('.search')) qres.hidden = true; });
+
+  render();
+})();
+</script>
