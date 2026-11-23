@@ -323,7 +323,7 @@ dialog.lb::backdrop { background: var(--shade); }
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-<script src="content.js?v=fff1797190"></script>
+<script src="content.js?v=7da67fffcb"></script>
 <script>
 (() => {
   const W = window.WIKI, $ = s => document.querySelector(s);
@@ -386,7 +386,7 @@ dialog.lb::backdrop { background: var(--shade); }
     if (!lead && !rows.length) return '';
     const n = countImgs(p.slug);
     if (n) rows.push(['Screenshots', String(n)]);
-    rows.push(['Source', p.source === 'generated from the game files' ? 'Game files, version 1.1' : `<code>${esc(p.file)}</code>`]);
+    rows.push(p.source === 'generated from the game files' ? ['Game version', '1.1'] : ['Source', `<code>${esc(p.file)}</code>`]);
     rows.push(['Last edited', new Date(p.edited * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })]);
     return `<aside class="infobox"><div class="ib-title">${esc(p.title)}</div>${lead ? `<figure><img src="${lead.src}" alt="${esc(lead.cap)}" data-cap="${esc(lead.cap)}" tabindex="0"><figcaption>${esc(lead.cap)}</figcaption></figure>` : ''}<table>${rows.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${v.startsWith('<') ? v : esc(v)}</td></tr>`).join('')}</table></aside>`;
   }
@@ -434,7 +434,7 @@ dialog.lb::backdrop { background: var(--shade); }
       const first = art.querySelector(':scope > h2, :scope > .featured');
       art.insertBefore(toc, first);
     }
-    $('#foot').innerHTML = `This page was last edited on ${new Date(p.edited * 1000).toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}. ${p.source === 'generated from the game files' ? 'Generated from the files of Gothic 1 Remake 1.1 (quest scripts, glossary, English text and pictures).' : `Built from <code>${esc(p.source)}</code>. Game 1.1 screenshots taken with the test driver.`} Gothic 1 Remake and its text and art belong to THQ Nordic. This is an unofficial fan wiki, not made, endorsed or supported by THQ Nordic.`;
+    $('#foot').innerHTML = `This page was last edited on ${new Date(p.edited * 1000).toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}. ${p.source === 'generated from the game files' ? 'Written for Gothic 1 Remake version 1.1.' : `Built from <code>${esc(p.source)}</code>. Game 1.1 screenshots taken with the test driver.`} Gothic 1 Remake and its text and art belong to THQ Nordic. This is an unofficial fan wiki, not made, endorsed or supported by THQ Nordic.`;
   }
 
   const reveal = sp => { const on = sp.classList.toggle('shown'); sp.setAttribute('aria-expanded', on); };
