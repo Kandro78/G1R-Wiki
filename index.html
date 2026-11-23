@@ -157,7 +157,7 @@ figure.beat figcaption a { color: var(--gold-lt); text-decoration-color: rgba(22
 .spoiler { cursor: pointer; border-radius: 2px; --sp-label: var(--gold-ink); }
 .spoiler:not(.shown) { background: rgba(128,110,80,.16); box-shadow: 0 0 0 1px rgba(128,110,80,.3); }
 .spoiler:not(.shown) > span { filter: blur(5px); user-select: none; }
-.spoiler:not(.shown)::before { content: 'Spoiler: death'; display: inline-block; font: 700 .62rem/1 var(--sans); font-style: normal; text-transform: uppercase; letter-spacing: .08em; color: var(--sp-label); border: 1px solid currentColor; border-radius: 2px; padding: 3px 5px 2px; margin: 0 6px 0 2px; vertical-align: 2px; }
+.spoiler:not(.shown)::before { content: 'Spoiler'; display: inline-block; font: 700 .62rem/1 var(--sans); font-style: normal; text-transform: uppercase; letter-spacing: .08em; color: var(--sp-label); border: 1px solid currentColor; border-radius: 2px; padding: 3px 5px 2px; margin: 0 6px 0 2px; vertical-align: 2px; }
 .spoiler:hover:not(.shown) { box-shadow: 0 0 0 1px var(--gold); }
 figure.beat .spoiler { --sp-label: var(--gold-lt); }
 article blockquote .spoiler { --sp-label: #8a5c12; }
@@ -323,7 +323,7 @@ dialog.lb::backdrop { background: var(--shade); }
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-<script src="content.js?v=185189ed07"></script>
+<script src="content.js?v=fff1797190"></script>
 <script>
 (() => {
   const W = window.WIKI, $ = s => document.querySelector(s);
