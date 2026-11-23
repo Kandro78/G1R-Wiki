@@ -107,6 +107,25 @@ details.book summary .n { font-weight: 400; color: var(--muted); font-size: .82r
 .featured h3 { margin: 0 0 8px; font: 400 1.1rem/1.3 var(--serif); padding-bottom: 4px; border-bottom: 1px solid var(--border-soft); }
 .featured img { width: 100%; display: block; cursor: zoom-in; }
 .featured p { font-size: .86rem; margin: 6px 0 0; }
+ul.portal { list-style: none; padding: 0; margin: 16px 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px; }
+ul.portal a { display: flex; flex-direction: column; height: 100%; border: 1px solid var(--border-soft); background: var(--panel); color: var(--fg); }
+ul.portal a:hover { text-decoration: none; border-color: var(--link); }
+ul.portal img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #fff; }
+ul.portal b { font: 400 1.2rem/1.3 var(--serif); padding: 8px 12px 0; color: var(--link); }
+ul.portal span { font-size: .84rem; color: var(--muted); padding: 2px 12px 12px; }
+ul.cards { list-style: none; padding: 0; margin: 8px 0 18px; display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; max-width: none; }
+ul.cards li { margin: 0; max-width: none; }
+ul.cards a { display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--border-soft); background: var(--panel); padding: 4px; font-size: .84rem; line-height: 1.3; height: 100%; box-sizing: border-box; }
+ul.cards a:hover { text-decoration: none; border-color: var(--link); }
+ul.cards img, ul.cards .noimg { width: 100%; aspect-ratio: 500 / 264; object-fit: cover; display: block; background: #fff; }
+ul.cards .noimg { background: var(--panel-2); }
+figure.beat { margin: 14px 0; max-width: 720px; border: 1px solid var(--border-soft); background: var(--panel); padding: 6px; }
+figure.beat img { width: 100%; display: block; cursor: zoom-in; }
+figure.beat figcaption { font: italic 1rem/1.45 var(--serif); padding: 6px 4px 2px; }
+ul.gallery.maps { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+ul.gallery.maps .thumb img { aspect-ratio: 688 / 512; object-fit: contain; }
+.infobox figure img[src^="img/gl-"] { background: #fff; }
+.from a { color: var(--link); }
 footer { grid-column: 2; margin-top: 36px; padding-top: 10px; border-top: 1px solid var(--border-soft); font-size: .78rem; color: var(--muted); }
 
 dialog.lb { border: 0; padding: 0; background: transparent; max-width: 100vw; max-height: 100vh; width: 100vw; height: 100vh; }
@@ -134,7 +153,7 @@ dialog.lb::backdrop { background: var(--shade); }
   <header class="top">
     <a class="logo" href="#main" aria-label="G1R Wiki, main page">
       <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M14 13h13a7 7 0 0 1 0 14H14zM14 27v9M27 27l7 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M33 12l2 4 4 .6-3 2.8.8 4-3.8-2-3.8 2 .8-4-3-2.8 4-.6z" fill="currentColor" opacity=".55"/></svg>
-      <span><b>G1R Wiki</b><small>Gothic 1 Remake · testing and modding notes</small></span>
+      <span><b>G1R Wiki</b><small>Gothic 1 Remake · the unofficial game wiki</small></span>
     </a>
     <div class="search" role="search">
       <input id="q" type="search" placeholder="Search G1R Wiki" aria-label="Search the wiki" autocomplete="off">
@@ -142,8 +161,7 @@ dialog.lb::backdrop { background: var(--shade); }
     </div>
   </header>
   <nav class="side" aria-label="Wiki">
-    <h2>Navigation</h2>
-    <ul id="nav"></ul>
+    <div id="nav"></div>
     <h2>On this page</h2>
     <ul id="navsec"></ul>
   </nav>
@@ -235,7 +253,7 @@ dialog.lb::backdrop { background: var(--shade); }
     if (!lead && !rows.length) return '';
     const n = countImgs(p.slug);
     if (n) rows.push(['Screenshots', String(n)]);
-    rows.push(['Source file', `<code>${esc(p.file)}</code>`]);
+    rows.push(['Source', p.source === 'generated from the game files' ? 'Game files, version 1.1' : `<code>${esc(p.file)}</code>`]);
     rows.push(['Last edited', new Date(p.edited * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })]);
     return `<aside class="infobox"><div class="ib-title">${esc(p.title)}</div>${lead ? `<figure><img src="${lead.src}" alt="${esc(lead.cap)}" data-cap="${esc(lead.cap)}" tabindex="0"><figcaption>${esc(lead.cap)}</figcaption></figure>` : ''}<table>${rows.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${v.startsWith('<') ? v : esc(v)}</td></tr>`).join('')}</table></aside>`;
   }
@@ -254,15 +272,17 @@ dialog.lb::backdrop { background: var(--shade); }
     const slug = bySlug[location.hash.slice(1)] ? location.hash.slice(1) : 'main', p = bySlug[slug];
     document.title = slug === 'main' ? 'G1R Wiki' : `${p.title} – G1R Wiki`;
     $('#ptitle').textContent = slug === 'main' ? 'Welcome to the G1R Wiki' : p.title;
-    $('#pfrom').textContent = view === 'src' ? `Markdown source of ${p.file}` : 'From G1R Wiki, the Gothic 1 Remake testing and modding notebook';
-    $('#nav').innerHTML = W.pages.map(q => `<li><a href="#${q.slug}" class="${q.slug === slug ? 'cur' : ''}">${esc(q.title)}</a></li>`).join('');
+    const par = p.parent && bySlug[p.parent];
+    $('#pfrom').innerHTML = view === 'src' ? `Markdown source of ${esc(p.file)}` : `From G1R Wiki, the unofficial Gothic 1 Remake wiki${par ? ` · <a href="#${par.slug}">${esc(par.title)}</a>` : ''}`;
+    const cur = par ? par.slug : slug, groups = [...new Set(W.pages.filter(q => q.nav).map(q => q.nav))];
+    $('#nav').innerHTML = groups.map(g => `<h2>${esc(g)}</h2><ul>${W.pages.filter(q => q.nav === g).map(q => `<li><a href="#${q.slug}" class="${q.slug === (p.nav ? slug : cur) ? 'cur' : ''}">${esc(q.title)}</a></li>`).join('')}</ul>`).join('');
     $('#tab-art').setAttribute('aria-selected', view === 'art'); $('#tab-src').setAttribute('aria-selected', view === 'src');
     const art = $('#art');
     if (view === 'src') { art.innerHTML = `<pre class="source">${esc(p.md)}</pre>`; $('#navsec').innerHTML = ''; return; }
     let md = p.md.replace(/^# .*\n+/, '');
     art.innerHTML = infobox(p) + marked.parse(md);
     art.querySelectorAll('strong').forEach(s => { const t = s.textContent.trim().toLowerCase(); if (['tested', 'read', 'guess'].includes(t)) { s.className = 'badge ' + t; } });
-    if (slug === 'main') { const first = art.querySelector('h2'); const tpl = document.createElement('template'); tpl.innerHTML = featured(); art.insertBefore(tpl.content, first); }
+    if (slug === 'notebook') { const first = art.querySelector('h2'); const tpl = document.createElement('template'); tpl.innerHTML = featured(); art.insertBefore(tpl.content, first); }
     insertGalleries(art, slug);
     const heads = [...art.querySelectorAll('h2, h3')].filter(h => !h.closest('.featured'));
     heads.forEach(h => { if (!h.id) h.id = slugify(h.textContent); });
@@ -278,7 +298,7 @@ dialog.lb::backdrop { background: var(--shade); }
       const first = art.querySelector(':scope > h2, :scope > .featured');
       art.insertBefore(toc, first);
     }
-    $('#foot').innerHTML = `This page was last edited on ${new Date(p.edited * 1000).toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}. Built from <code>Gothic 1 Remake/wiki/${esc(p.file)}</code>. Game 1.1 screenshots taken with the test driver. This is an unofficial modding notebook, not made, endorsed or supported by THQ Nordic.`;
+    $('#foot').innerHTML = `This page was last edited on ${new Date(p.edited * 1000).toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}. ${p.source === 'generated from the game files' ? 'Generated from the files of Gothic 1 Remake 1.1 (quest scripts, glossary, English text and pictures).' : `Built from <code>${esc(p.source)}</code>. Game 1.1 screenshots taken with the test driver.`} Gothic 1 Remake and its text and art belong to THQ Nordic. This is an unofficial fan wiki, not made, endorsed or supported by THQ Nordic.`;
   }
 
   document.addEventListener('click', e => {
