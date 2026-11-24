@@ -162,12 +162,16 @@ figure.beat figcaption a { color: var(--gold-lt); text-decoration-color: rgba(22
 .spoiler { cursor: pointer; border-radius: 2px; --sp-label: var(--gold-ink); }
 .spoiler:not(.shown) { background: rgba(128,110,80,.16); box-shadow: 0 0 0 1px rgba(128,110,80,.3); }
 .spoiler:not(.shown) > span { filter: blur(5px); user-select: none; }
+.spoiler.block { display: block; } .spoiler.block > span { display: block; }
+.spoiler.block:not(.shown) > span { filter: blur(14px); }
 .spoiler:not(.shown)::before { content: 'Spoiler'; display: inline-block; font: 700 .62rem/1 var(--sans); font-style: normal; text-transform: uppercase; letter-spacing: .08em; color: var(--sp-label); border: 1px solid currentColor; border-radius: 2px; padding: 3px 5px 2px; margin: 0 6px 0 2px; vertical-align: 2px; }
 .spoiler:hover:not(.shown) { box-shadow: 0 0 0 1px var(--gold); }
 figure.beat .spoiler { --sp-label: var(--gold-lt); }
 article blockquote .spoiler { --sp-label: #8a5c12; }
 ul.gallery.maps { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
 ul.gallery.maps .thumb img { aspect-ratio: 688 / 512; object-fit: contain; }
+ul.gallery.card { grid-template-columns: minmax(0, 360px); }  /* a whole glossary card, never cropped */
+ul.gallery.card .thumb img { aspect-ratio: auto; }
 .from a { color: var(--fg); }
 
 /* camp choice (story page) */
@@ -332,7 +336,7 @@ dialog.lb::backdrop { background: var(--shade); }
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-<script src="content.js?v=9abbcceeda"></script>
+<script src="content.js?v=1ab2444355"></script>
 <script>
 (() => {
   const W = window.WIKI, $ = s => document.querySelector(s);
@@ -449,7 +453,7 @@ dialog.lb::backdrop { background: var(--shade); }
   const reveal = sp => { const on = sp.classList.toggle('shown'); sp.setAttribute('aria-expanded', on); };
   document.addEventListener('click', e => {
     const sp = e.target.closest('.spoiler');
-    if (sp) { reveal(sp); return; }
+    if (sp && !(sp.classList.contains('shown') && e.target.closest('img[data-cap]'))) { reveal(sp); return; }  // a shown card picture opens the lightbox
     const go = e.target.closest('[data-go]');
     if (go) { e.preventDefault(); document.getElementById(go.dataset.go)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); const d = document.getElementById(go.dataset.go)?.closest('details'); if (d) d.open = true; return; }
     const img = e.target.closest('#art img[data-cap]');
