@@ -264,6 +264,25 @@ dialog.lb::backdrop { background: var(--shade); }
 .lb-bar button { font: inherit; color: var(--stone-fg); background: rgba(255,255,255,.08); border: 1px solid rgba(201,154,62,.45); border-radius: 2px; padding: 6px 14px; cursor: pointer; }
 .lb-bar .cap { min-width: 0; text-align: center; }
 
+/* the game's map screen with dots (item spots, places) */
+.spotmap { margin: 12px 0 22px; max-width: 760px; }
+.spotmap-in { position: relative; }
+.spotmap img { display: block; width: 100%; height: auto; }
+.spotmap i { position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: #c0221a; border: 2px solid #fff3d6; box-shadow: 0 0 0 1px rgba(0,0,0,.5); }
+.spotmap figcaption { font-size: .85rem; opacity: .8; margin-top: 4px; }
+
+/* full text search page */
+.tx-bar { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 6px; }
+.tx-bar select, .tx-bar input { font: inherit; font-size: 1rem; padding: 8px 12px; color: inherit; background: var(--bg-2, transparent); border: 1px solid rgba(201,154,62,.5); border-radius: 2px; }
+.tx-bar input { flex: 1 1 260px; min-width: 0; }
+.tx-note { color: var(--muted, inherit); font-size: .9rem; margin: 6px 0; }
+.tx-hits { list-style: none; padding: 0; margin: 0; }
+.tx-hits li { padding: 10px 0; border-bottom: 1px solid rgba(201,154,62,.2); overflow-wrap: anywhere; }
+.tx-hits .tx-t { display: block; }
+.tx-hits code { display: block; font-size: .78rem; opacity: .7; margin-top: 3px; }
+.tx-hits .tx-en { display: block; font-size: .88rem; font-style: italic; opacity: .8; margin-top: 3px; }
+.tx-hits mark { background: rgba(201,154,62,.35); color: inherit; }
+
 @media (max-width: 1240px) { #topnav { display: none; } }
 @media (max-width: 900px) {
   .bento { grid-template-columns: minmax(0, 1fr); grid-auto-rows: 300px; }
@@ -336,7 +355,7 @@ dialog.lb::backdrop { background: var(--shade); }
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-<script src="content.js?v=2b2427a359"></script>
+<script src="content.js?v=6c11083416"></script>
 <script>
 (() => {
   const W = window.WIKI, $ = s => document.querySelector(s);
@@ -404,6 +423,38 @@ dialog.lb::backdrop { background: var(--shade); }
     return `<aside class="infobox"><div class="ib-title">${esc(p.title)}</div>${lead ? `<figure><img src="${lead.src}" alt="${esc(lead.cap)}" data-cap="${esc(lead.cap)}" tabindex="0"><figcaption>${esc(lead.cap)}</figcaption></figure>` : ''}<table>${rows.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${v.startsWith('<') ? v : esc(v)}</td></tr>`).join('')}</table></aside>`;
   }
 
+  // full text search: texts/keys.js and texts/<code>.js are loaded once, when this page first needs them
+  const TX = {};
+  function loadTexts(code, v) {
+    if (!TX[code]) TX[code] = new Promise((ok, no) => {
+      const s = document.createElement('script'); s.src = `texts/${code}.js?v=${v}`;
+      s.onload = () => ok(window['TX_' + code]); s.onerror = () => { delete TX[code]; no(); }; document.head.appendChild(s);
+    });
+    return TX[code];
+  }
+  function mountTexts(el) {
+    const langs = JSON.parse(el.dataset.langs), v = el.dataset.v;
+    el.innerHTML = `<div class="tx-bar"><select aria-label="Language">${langs.map(([c, n, k]) => `<option value="${c}">${esc(n)} (${k.toLocaleString('en-GB')})</option>`).join('')}</select>`
+      + `<input type="search" placeholder="Words to find, or part of a key" aria-label="Text to find" autocomplete="off"></div><p class="tx-note" aria-live="polite"></p><ol class="tx-hits"></ol>`;
+    const [sel, inp] = el.querySelectorAll('select, input'), note = el.querySelector('.tx-note'), list = el.querySelector('.tx-hits');
+    const mark = (t, q) => { const lo = t.toLowerCase(); let out = '', i = 0, j; while (q && (j = lo.indexOf(q, i)) >= 0) { out += esc(t.slice(i, j)) + '<mark>' + esc(t.slice(j, j + q.length)) + '</mark>'; i = j + q.length; } return out + esc(t.slice(i)); };
+    let timer, run = 0;
+    async function go() {
+      const q = inp.value.trim().toLowerCase(), code = sel.value, me = ++run;
+      if (q.length < (/[^\x00-\x7f]/.test(q) ? 1 : 2)) { note.textContent = ''; list.innerHTML = ''; return; }
+      note.textContent = 'Loading the texts ...';
+      let keys, texts, en;
+      try { [keys, texts, en] = await Promise.all([loadTexts('keys', v), loadTexts(code, v), code === 'en' ? null : loadTexts('en', v)]); }
+      catch { note.textContent = 'The texts could not be loaded.'; return; }
+      if (me !== run) return;
+      const hits = [];
+      for (let i = 0; i < keys.length; i++) if (texts[i] && (texts[i].toLowerCase().includes(q) || keys[i].toLowerCase().includes(q))) hits.push(i);
+      note.textContent = hits.length ? `${hits.length.toLocaleString('en-GB')} texts${hits.length > 300 ? ', the first 300 shown' : ''}` : 'No text found.';
+      list.innerHTML = hits.slice(0, 300).map(i => `<li><span class="tx-t">${mark(texts[i], q)}</span><code>${mark(keys[i], q)}</code>${en && en[i] ? `<span class="tx-en">${esc(en[i])}</span>` : ''}</li>`).join('');
+    }
+    inp.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(go, 250); });
+    sel.addEventListener('change', go);
+  }
   function featured() {
     const g = W.galleries.books || [], rep = g.find(x => x.kind === 'pairs');
     const pair = rep && rep.groups.find(b => b.title === 'Slave')?.pairs[2];
@@ -424,8 +475,8 @@ dialog.lb::backdrop { background: var(--shade); }
     $('#pfrom').innerHTML = view === 'src' ? `Markdown source of ${esc(p.file)}` : `From G1R Wiki, the unofficial Gothic 1 Remake wiki${par ? ` · <a href="#${par.slug}">${esc(par.title)}</a>` : ''}`;
     const cur = par ? par.slug : slug, groups = [...new Set(W.pages.filter(q => q.nav).map(q => q.nav))];
     $('#nav').innerHTML = groups.map(g => `<h2>${esc(g)}</h2><ul>${W.pages.filter(q => q.nav === g).map(q => `<li><a href="#${q.slug}" class="${q.slug === (p.nav ? slug : cur) ? 'cur' : ''}">${esc(q.title)}</a></li>`).join('')}</ul>`).join('');
-    // the header holds the main hubs only; the art and book pages stay in the side column, or the search box gets squeezed
-    $('#topnav').innerHTML = W.pages.filter(q => q.nav === 'Game' && !['main', 'loading-screens', 'paintings', 'game-books'].includes(q.slug)).map(q => `<a href="#${q.slug}" class="${q.slug === cur ? 'cur' : ''}">${esc(q.title.replace('Main story line', 'Story'))}</a>`).join('');
+    // the header holds the main hubs only; the other game pages stay in the side column, or the search box gets squeezed
+    $('#topnav').innerHTML = W.pages.filter(q => ['story', 'quests', 'items', 'characters', 'bestiary', 'locations', 'crafting'].includes(q.slug)).map(q => `<a href="#${q.slug}" class="${q.slug === cur ? 'cur' : ''}">${esc(q.title.replace('Main story line', 'Story'))}</a>`).join('');
     $('#tab-art').setAttribute('aria-selected', view === 'art'); $('#tab-src').setAttribute('aria-selected', view === 'src');
     const art = $('#art');
     if (view === 'src') { art.innerHTML = `<pre class="source">${esc(p.md)}</pre>`; $('#navsec').innerHTML = ''; return; }
@@ -434,6 +485,7 @@ dialog.lb::backdrop { background: var(--shade); }
     art.querySelectorAll('strong').forEach(s => { const t = s.textContent.trim().toLowerCase(); if (['tested', 'read', 'guess'].includes(t)) { s.className = 'badge ' + t; } });
     if (slug === 'notebook') { const first = art.querySelector('h2'); const tpl = document.createElement('template'); tpl.innerHTML = featured(); art.insertBefore(tpl.content, first); }
     insertGalleries(art, slug);
+    const ts = art.querySelector('#textsearch'); if (ts) mountTexts(ts);
     const heads = [...art.querySelectorAll('h2, h3')].filter(h => !h.closest('.featured, .camps'));
     heads.forEach(h => { if (!h.id) h.id = slugify(h.textContent); });
     $('#navsec').innerHTML = heads.filter(h => h.tagName === 'H2').map(h => `<li><a href="#${slug}" data-go="${h.id}">${esc(h.textContent)}</a></li>`).join('');
