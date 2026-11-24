@@ -149,6 +149,11 @@ ul.cards a:hover { border-color: var(--gold); box-shadow: 0 10px 22px -14px rgba
 ul.cards img, ul.cards .noimg { width: 100%; aspect-ratio: 500 / 264; object-fit: cover; display: block; background: var(--journal-bg); filter: sepia(.45); mix-blend-mode: var(--blend); }
 ul.cards .noimg { background: var(--panel-2); }
 ul.cards span { padding: 0 3px; }
+figure.tip { margin: 6px 0 20px; max-width: 380px; clear: none; }
+figure.tip img { width: 100%; display: block; cursor: zoom-in; box-shadow: var(--frame); }
+figure.tip figcaption { font-size: .8rem; font-style: italic; color: var(--muted, inherit); padding-top: 6px; }
+img.ico { width: 44px; height: 44px; display: block; background: var(--stone); border-radius: 3px; }
+.infobox figure img[src^="img/ic-"] { width: 60%; margin: 0 auto; background: radial-gradient(circle, rgba(201,154,62,.12), transparent 70%); }
 figure.beat { margin: 18px 0; max-width: 760px; background: var(--stone); padding: 10px; box-shadow: var(--frame); }
 figure.beat img { width: 100%; display: block; cursor: zoom-in; }
 figure.beat figcaption { color: var(--stone-fg); font: italic 400 1.02rem/1.55 var(--sans); padding: 12px 10px 6px; }
@@ -323,7 +328,7 @@ dialog.lb::backdrop { background: var(--shade); }
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-<script src="content.js?v=7da67fffcb"></script>
+<script src="content.js?v=6972c7a80e"></script>
 <script>
 (() => {
   const W = window.WIKI, $ = s => document.querySelector(s);
