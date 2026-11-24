@@ -41,11 +41,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, .thumb img:focus-vis
 header.top { position: fixed; z-index: 30; inset: 0 0 auto 0; height: 72px; background: rgba(20,16,12,.95); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid rgba(201,154,62,.35); color: var(--stone-fg); }
 .top-in { max-width: 1320px; height: 100%; margin: 0 auto; box-sizing: border-box; padding-inline: max(16px, env(safe-area-inset-left, 0px)); display: flex; align-items: center; gap: 28px; }
 .logo { font: 600 1.9rem/1 var(--display); text-transform: uppercase; letter-spacing: .02em; color: var(--stone-fg); text-decoration: none; white-space: nowrap; }
-#topnav { display: flex; gap: 24px; font: 600 1.05rem/1 var(--display); text-transform: uppercase; letter-spacing: .05em; }
+#topnav { display: flex; gap: 22px; white-space: nowrap; font: 600 1.05rem/1 var(--display); text-transform: uppercase; letter-spacing: .05em; }
 #topnav a { text-decoration: none; color: var(--stone-muted); padding: 6px 0; border-bottom: 1px solid transparent; }
 #topnav a:hover { color: var(--stone-fg); }
 #topnav a.cur { color: var(--gold); border-bottom-color: var(--gold); }
-.search { position: relative; flex: 1 1 200px; max-width: 320px; margin-left: auto; }
+.search { position: relative; flex: 1 1 200px; min-width: 200px; max-width: 320px; margin-left: auto; }
 .search input { width: 100%; box-sizing: border-box; padding: 8px 14px; font: inherit; font-size: .9rem; color: var(--stone-fg); background: rgba(255,255,255,.05); border: 1px solid rgba(201,154,62,.35); border-radius: 2px; }
 .search input::placeholder { color: var(--stone-muted); }
 .search ul { position: absolute; z-index: 40; left: 0; right: 0; top: 100%; margin: 4px 0 0; padding: 4px 0; list-style: none; background: var(--stone); border: 1px solid rgba(201,154,62,.4); box-shadow: 0 10px 30px rgba(0,0,0,.4); max-height: 60vh; overflow: auto; min-width: 260px; }
@@ -264,7 +264,7 @@ dialog.lb::backdrop { background: var(--shade); }
 .lb-bar button { font: inherit; color: var(--stone-fg); background: rgba(255,255,255,.08); border: 1px solid rgba(201,154,62,.45); border-radius: 2px; padding: 6px 14px; cursor: pointer; }
 .lb-bar .cap { min-width: 0; text-align: center; }
 
-@media (max-width: 1080px) { #topnav { display: none; } }
+@media (max-width: 1240px) { #topnav { display: none; } }
 @media (max-width: 900px) {
   .bento { grid-template-columns: minmax(0, 1fr); grid-auto-rows: 300px; }
   .bento .w2 { grid-column: auto; }
@@ -424,7 +424,8 @@ dialog.lb::backdrop { background: var(--shade); }
     $('#pfrom').innerHTML = view === 'src' ? `Markdown source of ${esc(p.file)}` : `From G1R Wiki, the unofficial Gothic 1 Remake wiki${par ? ` · <a href="#${par.slug}">${esc(par.title)}</a>` : ''}`;
     const cur = par ? par.slug : slug, groups = [...new Set(W.pages.filter(q => q.nav).map(q => q.nav))];
     $('#nav').innerHTML = groups.map(g => `<h2>${esc(g)}</h2><ul>${W.pages.filter(q => q.nav === g).map(q => `<li><a href="#${q.slug}" class="${q.slug === (p.nav ? slug : cur) ? 'cur' : ''}">${esc(q.title)}</a></li>`).join('')}</ul>`).join('');
-    $('#topnav').innerHTML = W.pages.filter(q => q.nav === 'Game' && q.slug !== 'main').map(q => `<a href="#${q.slug}" class="${q.slug === cur ? 'cur' : ''}">${esc(q.title.replace('Main story line', 'Story'))}</a>`).join('');
+    // the header holds the main hubs only; the art and book pages stay in the side column, or the search box gets squeezed
+    $('#topnav').innerHTML = W.pages.filter(q => q.nav === 'Game' && !['main', 'loading-screens', 'paintings', 'game-books'].includes(q.slug)).map(q => `<a href="#${q.slug}" class="${q.slug === cur ? 'cur' : ''}">${esc(q.title.replace('Main story line', 'Story'))}</a>`).join('');
     $('#tab-art').setAttribute('aria-selected', view === 'art'); $('#tab-src').setAttribute('aria-selected', view === 'src');
     const art = $('#art');
     if (view === 'src') { art.innerHTML = `<pre class="source">${esc(p.md)}</pre>`; $('#navsec').innerHTML = ''; return; }
