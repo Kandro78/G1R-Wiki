@@ -202,7 +202,9 @@ form.hsearch input::placeholder { color: var(--stone-muted); }
 .btn-y { font: 600 1.3rem/1 var(--display); text-transform: uppercase; letter-spacing: .05em; background: var(--gold); color: var(--stone); border: 0; border-radius: 2px; padding: 14px 30px; cursor: pointer; text-decoration: none; transition: filter var(--ease); }
 .btn-y:hover { filter: brightness(1.12); }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); padding-block: 34px; text-align: center; border-bottom: 1px solid; border-image: linear-gradient(to right, transparent, var(--gold), transparent) 1; }
-.stats div { padding: 6px 10px; }
+.stats a { padding: 6px 10px; text-decoration: none; border-radius: 2px; transition: background var(--ease); }
+.stats a:hover, .stats a:focus-visible { background: rgba(201,154,62,.08); }
+.stats a:hover span { color: var(--gold-ink); }
 .stats b { display: block; font: 600 3.2rem/1 var(--display); color: var(--gold-ink); }
 .stats span { font: 600 1rem/1 var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .sec-head { font: 600 clamp(2.4rem, 5.5vw, 4.2rem)/1 var(--display); text-transform: uppercase; margin: 0 0 28px; }
@@ -328,7 +330,7 @@ dialog.lb::backdrop { background: var(--shade); }
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-<script src="content.js?v=59761b50c7"></script>
+<script src="content.js?v=225d8a4504"></script>
 <script>
 (() => {
   const W = window.WIKI, $ = s => document.querySelector(s);
