@@ -58,6 +58,14 @@ nav.side a { text-decoration: none; color: var(--muted); }
 nav.side a:hover { color: var(--fg); }
 nav.side a.cur { color: var(--fg); font-weight: 700; }
 nav.side a.cur::before { content: '✦ '; color: var(--gold); font-size: .75em; }
+/* side column: two <details>; on a wide screen both stay open and the menu's own summary is hidden, on a phone they fold */
+.navd > summary { list-style: none; }
+.navd > summary::-webkit-details-marker { display: none; }
+#navmenu > summary { display: none; }
+#navpage > summary { font: 600 1.05rem/1 var(--display); text-transform: uppercase; letter-spacing: .06em; color: var(--gold-ink); margin: 20px 0 8px; padding-bottom: 6px; border-bottom: 1px solid; border-image: linear-gradient(to right, var(--gold), transparent) 1; cursor: default; }
+.spall { font: 700 .72rem/1 var(--sans); text-transform: uppercase; letter-spacing: .08em; color: var(--gold-ink); background: none; border: 1px solid currentColor; border-radius: 2px; padding: 6px 10px 5px; cursor: pointer; margin: 0 0 14px; }
+.spall:hover { background: rgba(var(--line),.08); }
+a.auto { text-decoration-style: dotted; }
 
 main { min-width: 0; }
 .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); }
@@ -229,22 +237,6 @@ form.hsearch input::placeholder { color: var(--stone-muted); }
   .dir-t { font-size: 1.2rem; }
   .dir-cards .dir-d { font-size: .82rem; }
 }
-.steps-wrap { padding-block: 80px; background: var(--stone); color: var(--stone-fg); }
-.steps-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 48px; }
-.steps-grid .sec-head { position: sticky; top: 110px; align-self: start; color: var(--stone-fg); }
-.steps-grid .sec-head + p { color: var(--stone-muted); font-style: italic; }
-.step { display: grid; grid-template-columns: 120px 1fr; gap: 20px; padding: 24px 0; border-bottom: 1px solid rgba(var(--line),.18); text-decoration: none; color: var(--stone-fg); }
-.step .n { font: 600 5.4rem/.8 var(--display); color: rgba(var(--line),.28); transition: color var(--ease); }
-.step:hover .n, .step:focus-visible .n { color: var(--gold); }
-.step b { display: block; font: 600 1.8rem/1 var(--display); text-transform: uppercase; margin: 4px 0 8px; color: var(--gold); }
-.step span { color: var(--stone-muted); }
-/* closing band: a page of the journal */
-.cta { position: relative; overflow: hidden; background: var(--journal-bg); color: var(--journal-fg); text-align: center; padding-block: 100px; box-shadow: inset 0 0 120px rgba(70,60,50,.35); }
-.cta .bgtext { position: absolute; inset: 0; display: grid; place-items: center; font: 600 clamp(6rem, 22vw, 20rem)/.8 var(--display); text-transform: uppercase; opacity: .07; pointer-events: none; white-space: nowrap; }
-.cta h2 { position: relative; border: 0; padding: 0; font: 600 clamp(3rem, 8vw, 6.5rem)/.95 var(--display); text-transform: uppercase; margin: 0 0 22px; }
-.cta p { position: relative; font: italic 400 clamp(1.1rem, 2.2vw, 1.4rem)/1.6 var(--sans); max-width: 42rem; margin: 0 auto 34px; }
-.cta .go { position: relative; display: inline-block; font: 600 1.4rem/1 var(--display); text-transform: uppercase; letter-spacing: .05em; background: var(--stone); color: var(--gold); padding: 18px 38px; text-decoration: none; box-shadow: var(--frame); transition: filter var(--ease); }
-.cta .go:hover { filter: brightness(1.25); }
 .notebook-link { padding-block: 40px 0; color: var(--muted); }
 
 footer { grid-column: 2; margin-top: 48px; padding-top: 14px; border-top: 1px solid var(--border-soft); font-size: .78rem; color: var(--muted); }
@@ -278,8 +270,6 @@ dialog.lb::backdrop { background: var(--shade); }
 
 @media (max-width: 1240px) { #topnav { display: none; } }
 @media (max-width: 900px) {
-  .steps-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
-  .steps-grid .sec-head { position: static; }
   .camps { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 760px) {
@@ -289,17 +279,20 @@ dialog.lb::backdrop { background: var(--shade); }
   .search { max-width: none; flex-basis: 100%; }
   .page { grid-template-columns: minmax(0, 1fr); padding-top: 124px; }
   body.home .page { padding-top: 116px; }
-  nav.side { position: static; max-height: none; padding-top: 4px; }
-  nav.side h2 { display: none; }
-  nav.side ul { display: flex; flex-wrap: wrap; gap: 6px 14px; }
-  nav.side ul + h2 + ul { display: none; }
+  nav.side { position: static; max-height: none; padding-top: 4px; display: grid; gap: 8px; }
+  .navd > summary, #navmenu > summary, #navpage > summary { display: block; font: 600 1.05rem/1 var(--display); text-transform: uppercase; letter-spacing: .06em; color: var(--fg); margin: 0; padding: 12px 14px; border: 1px solid var(--border); border-image: none; background: var(--panel); cursor: pointer; }
+  .navd > summary::after { content: '▾'; float: right; color: var(--gold); }
+  .navd[open] > summary::after { content: '▴'; }
+  .navd[open] > summary { border-bottom-color: transparent; }
+  .navd > div, .navd > ul { border: 1px solid var(--border); border-top: 0; padding: 4px 14px 14px; }
+  nav.side h2 { margin: 14px 0 6px; font-size: .95rem; }
+  nav.side ul { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+  nav.side a { padding: 2px 0; }
   .infobox { float: none; width: auto; margin: 10px 0 18px; }
   footer { grid-column: 1; }
   .hero { padding-block: 64px 56px; }
   .badge-top::before, .badge-top::after { display: none; }
   form.hsearch { flex-direction: column; }
-  .step { grid-template-columns: 64px 1fr; }
-  .step .n { font-size: 3.4rem; }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; animation: none !important; transition: none !important; } }
 </style>
@@ -317,9 +310,8 @@ dialog.lb::backdrop { background: var(--shade); }
 </header>
 <div class="page">
   <nav class="side" aria-label="Wiki">
-    <div id="nav"></div>
-    <h2>On this page</h2>
-    <ul id="navsec"></ul>
+    <details class="navd" id="navmenu" open><summary>Wiki menu</summary><div id="nav"></div></details>
+    <details class="navd" id="navpage" open><summary>On this page</summary><ul id="navsec"></ul></details>
   </nav>
   <main>
     <div class="tabs" role="tablist">
@@ -346,7 +338,7 @@ dialog.lb::backdrop { background: var(--shade); }
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-<script src="content.js?v=68a0d74afd"></script>
+<script src="content.js?v=9153b09efd"></script>
 <script>
 (() => {
   const W = window.WIKI, $ = s => document.querySelector(s);
@@ -361,6 +353,7 @@ dialog.lb::backdrop { background: var(--shade); }
   const renderer = new marked.Renderer();
   renderer.link = (href, title, text) => {
     const f = href.split('#')[0];
+    if (!f && href.length > 1) return `<a href="${esc(href)}" data-go="${esc(href.slice(1))}">${text}</a>`;
     if (fileSlug[f]) return `<a href="#${fileSlug[f]}">${text}</a>`;
     if (/^https?:/.test(href)) return `<a href="${esc(href)}" target="_blank" rel="noopener">${text}</a>`;
     return `<span class="path" title="${esc(href)} (file in the repo, not part of the site)">${text}</span>`;
@@ -447,17 +440,55 @@ dialog.lb::backdrop { background: var(--shade); }
     sel.addEventListener('change', go);
   }
   function featured() {
-    const g = W.galleries.books || [], rep = g.find(x => x.kind === 'pairs');
+    const g = W.galleries['book-reader-bug'] || [], rep = g.find(x => x.kind === 'pairs');
     const pair = rep && rep.groups.find(b => b.title === 'Slave')?.pairs[2];
     const over = g.find(x => x.id === 'gallery-books')?.lead?.[0];
     let h = '<div class="featured">';
-    if (pair) h += `<section data-gallery><h3>Featured: the book bug</h3><div class="pair"><div class="two">${fig(pair.before, 'Before')}${fig(pair.after, 'After')}</div></div><p>Slave, spread 3: blank pages in the unpatched game, pictures back after the repair. <a href="#books">Read the article</a>.</p></section>`;
-    if (over) h += `<section data-gallery><h3>From the galleries</h3><img loading="lazy" tabindex="0" src="${over.src}" alt="${esc(over.cap)}" data-cap="${esc(over.cap)}"><p>All 46 books were opened by the test driver and shot spread by spread. <a href="#books">See every book</a>.</p></section>`;
+    if (pair) h += `<section data-gallery><h3>Featured: the book bug</h3><div class="pair"><div class="two">${fig(pair.before, 'Before')}${fig(pair.after, 'After')}</div></div><p>Slave, spread 3: blank pages in the unpatched game, pictures back after the repair. <a href="#book-reader-bug">Read the article</a>.</p></section>`;
+    if (over) h += `<section data-gallery><h3>From the galleries</h3><img loading="lazy" tabindex="0" src="${over.src}" alt="${esc(over.cap)}" data-cap="${esc(over.cap)}"><p>All 46 books were opened by the test driver and shot spread by spread. <a href="#book-reader-bug">See every book</a>.</p></section>`;
     return h + '</div>';
   }
 
+  // pages renamed on 2026-11-25; old links (the public site was shared before) still land on them
+  const ALIAS = { notebook: 'testing-and-modding', books: 'book-reader-bug' };
+  const GEN = 'generated from the game files';
+
+  // names of other pages in the text become links (first mention only); quests and items with plain one-word names stay out
+  const linkable = W.pages.filter(p => ['characters', 'locations', 'bestiary', 'quests', 'items'].includes(p.parent)
+    && !/[()]/.test(p.title) && p.title.length > 3 && (p.parent !== 'items' || p.title.includes(' ')));
+  const order = ['characters', 'locations', 'bestiary', 'quests', 'items'];
+  const nameSlug = {};
+  for (const p of linkable.sort((a, b) => order.indexOf(a.parent) - order.indexOf(b.parent))) if (!(p.title in nameSlug)) nameSlug[p.title] = p.slug;
+  const nameRe = new RegExp('(?<![\\w\'])(' + Object.keys(nameSlug).sort((a, b) => b.length - a.length).map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')(?![\\w\'])', 'g');
+  function autoLink(root, self) {
+    const used = new Set([self]);
+    root.querySelectorAll('a[href^="#"]').forEach(a => used.add(a.getAttribute('href').slice(1)));
+    const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n =>
+      n.parentElement.closest('a, code, pre, h1, h2, h3, h4, .infobox, .toc, summary, button, .tx-hits, .tx-bar, .ib-title, .camps, ul.cards, .dir') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT });
+    const nodes = []; while (walk.nextNode()) nodes.push(walk.currentNode);
+    for (const n of nodes) {
+      const t = n.nodeValue; let last = 0, frag = null;
+      for (const m of t.matchAll(nameRe)) {
+        const s = nameSlug[m[1]];
+        if (used.has(s)) continue;
+        used.add(s); frag = frag || document.createDocumentFragment();
+        frag.append(t.slice(last, m.index));
+        const a = document.createElement('a'); a.href = '#' + s; a.className = 'auto'; a.textContent = m[1]; frag.append(a);
+        last = m.index + m[1].length;
+      }
+      if (frag) { frag.append(t.slice(last)); n.replaceWith(frag); }
+    }
+  }
+
+  const wide = matchMedia('(min-width: 761px)');
+  const syncNav = () => { $('#navmenu').open = $('#navpage').open = wide.matches; };
+  wide.addEventListener('change', syncNav);
+  document.querySelectorAll('.navd > summary').forEach(s => s.addEventListener('click', e => { if (wide.matches) e.preventDefault(); }));
+
   function render() {
+    if (ALIAS[location.hash.slice(1)]) { history.replaceState(null, '', '#' + ALIAS[location.hash.slice(1)]); }
     const slug = bySlug[location.hash.slice(1)] ? location.hash.slice(1) : 'main', p = bySlug[slug];
+    syncNav(); qres.hidden = true;
     const home = slug === 'main' && view === 'art';
     document.body.classList.toggle('home', home);
     document.title = slug === 'main' ? 'G1R Wiki' : `${p.title} – G1R Wiki`;
@@ -469,18 +500,27 @@ dialog.lb::backdrop { background: var(--shade); }
     // the header holds the main hubs only; the other game pages stay in the side column, or the search box gets squeezed
     $('#topnav').innerHTML = W.pages.filter(q => ['story', 'quests', 'items', 'characters', 'bestiary', 'locations', 'crafting'].includes(q.slug)).map(q => `<a href="#${q.slug}" class="${q.slug === cur ? 'cur' : ''}">${esc(q.title.replace('Main story line', 'Story'))}</a>`).join('');
     $('#tab-art').setAttribute('aria-selected', view === 'art'); $('#tab-src').setAttribute('aria-selected', view === 'src');
+    $('.tabs').style.display = p.source === GEN ? 'none' : '';  // a generated page's markdown means nothing to a reader
     const art = $('#art');
     if (view === 'src') { art.innerHTML = `<pre class="source">${esc(p.md)}</pre>`; $('#navsec').innerHTML = ''; return; }
     let md = p.md.replace(/^# .*\n+/, '');
     art.innerHTML = infobox(p) + marked.parse(md);
     art.querySelectorAll('strong').forEach(s => { const t = s.textContent.trim().toLowerCase(); if (['tested', 'read', 'guess'].includes(t)) { s.className = 'badge ' + t; } });
-    if (slug === 'notebook') { const first = art.querySelector('h2'); const tpl = document.createElement('template'); tpl.innerHTML = featured(); art.insertBefore(tpl.content, first); }
+    if (slug === 'testing-and-modding') { const first = art.querySelector('h2'); const tpl = document.createElement('template'); tpl.innerHTML = featured(); art.insertBefore(tpl.content, first); }
     insertGalleries(art, slug);
     const ts = art.querySelector('#textsearch'); if (ts) mountTexts(ts);
     const heads = [...art.querySelectorAll('h2, h3')].filter(h => !h.closest('.featured, .camps'));
     heads.forEach(h => { if (!h.id) h.id = slugify(h.textContent); });
     $('#navsec').innerHTML = heads.filter(h => h.tagName === 'H2').map(h => `<li><a href="#${slug}" data-go="${h.id}">${esc(h.textContent)}</a></li>`).join('');
-    if (heads.length > 2 && !home) {
+    $('#navpage').hidden = !$('#navsec').children.length;
+    if (!home) autoLink(art, slug);
+    const sps = art.querySelectorAll('.spoiler');
+    if (sps.length >= 3) {
+      const b = document.createElement('button'); b.className = 'spall'; b.type = 'button'; b.textContent = 'Show all spoilers';
+      b.onclick = () => { const on = b.textContent.startsWith('Show'); sps.forEach(sp => { sp.classList.toggle('shown', on); sp.setAttribute('aria-expanded', on); }); b.textContent = on ? 'Hide spoilers' : 'Show all spoilers'; };
+      art.insertBefore(b, art.querySelector(':scope > :not(.infobox)'));
+    }
+    if (heads.filter(h => h.tagName === 'H2').length >= 4 && !home) {  // a contents box only where there is something to jump between
       let n2 = 0, n3 = 0, ol = '<ol>', open = false;
       for (const h of heads) {
         if (h.tagName === 'H2') { if (open) { ol += '</ol>'; open = false; } ol += (n2 ? '</li>' : '') + `<li><a href="#${slug}" data-go="${h.id}"><span class="num">${++n2}</span>${esc(h.textContent)}</a>`; n3 = 0; }
@@ -497,7 +537,8 @@ dialog.lb::backdrop { background: var(--shade); }
   const reveal = sp => { const on = sp.classList.toggle('shown'); sp.setAttribute('aria-expanded', on); };
   document.addEventListener('click', e => {
     const sp = e.target.closest('.spoiler');
-    if (sp && !(sp.classList.contains('shown') && e.target.closest('img[data-cap]'))) { reveal(sp); return; }  // a shown card picture opens the lightbox
+    // a hidden spoiler only opens (its links don't fire yet); in a shown one, links and card pictures work and the rest hides it again
+    if (sp && (!sp.classList.contains('shown') || !e.target.closest('a, img[data-cap]'))) { e.preventDefault(); reveal(sp); return; }
     const go = e.target.closest('[data-go]');
     if (go) { e.preventDefault(); document.getElementById(go.dataset.go)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); const d = document.getElementById(go.dataset.go)?.closest('details'); if (d) d.open = true; return; }
     const img = e.target.closest('#art img[data-cap]');
@@ -524,16 +565,31 @@ dialog.lb::backdrop { background: var(--shade); }
   $('#tab-src').onclick = () => { view = 'src'; render(); };
   addEventListener('hashchange', () => { view = 'art'; render(); scrollTo(0, 0); });
 
-  // search over page titles and headings
-  const index = W.pages.flatMap(p => [{ slug: p.slug, label: p.title, sub: 'Page', go: '' }, ...[...p.md.matchAll(/^#{2,3} (.+)$/gm)].map(m => ({ slug: p.slug, label: m[1], sub: p.title, go: slugify(m[1]) })), ...((W.galleries[p.slug] || []).map(g => ({ slug: p.slug, label: g.title, sub: p.title + ' · gallery', go: g.id })))]);
+  // search: every word must match (filler words dropped); titles first, then headings, then pages that mention all the words
+  const KIND = { quests: 'Quest', characters: 'Character', bestiary: 'Creature', locations: 'Place', items: 'Item', story: 'Story', 'testing-and-modding': 'Testing and modding' };
+  const kindOf = p => p.parent && KIND[p.parent] ? KIND[p.parent] + (p.info.Camp ? ' · ' + p.info.Camp : p.parent === 'items' && p.info.Category ? ' · ' + p.info.Category : '')
+    : p.nav === 'Guides' ? 'Guide' : p.nav === 'Testing and modding' ? 'Testing and modding' : 'Overview page';
+  const index = W.pages.flatMap(p => [{ slug: p.slug, label: p.title, sub: kindOf(p), go: '', w: 3 }, ...[...p.md.matchAll(/^#{2,3} (.+)$/gm)].map(m => ({ slug: p.slug, label: m[1], sub: 'Section of ' + p.title, go: slugify(m[1]), w: 1 })), ...((W.galleries[p.slug] || []).map(g => ({ slug: p.slug, label: g.title, sub: 'Gallery on ' + p.title, go: g.id, w: 1 })))]);
+  const plain = Object.fromEntries(W.pages.map(p => [p.slug, (p.title + ' ' + p.md.replace(/<[^>]+>|\]\([^)]*\)/g, ' ')).toLowerCase()]));
+  const STOP = new Set('a an the of to in on at for and or how do does i is it my what where who whom can with you your get find me about which when why are be there'.split(' '));
+  const terms = t => { const w = t.toLowerCase().split(/[^\p{L}\p{N}']+/u).filter(Boolean), keep = w.filter(x => !STOP.has(x)); return (keep.length ? keep : w).map(x => x.length > 4 ? x.replace(/(?<!s)s$/, '') : x); };
   const q = $('#q'), qres = $('#qres');
   let hits = [];
   q.addEventListener('input', () => {
-    const t = q.value.trim().toLowerCase();
-    hits = t ? index.filter(x => x.label.toLowerCase().includes(t)).slice(0, 12) : [];
-    if (t && !hits.length) hits = W.pages.filter(p => p.md.toLowerCase().includes(t)).map(p => ({ slug: p.slug, label: p.title, sub: 'mentions “' + q.value.trim() + '”', go: '' }));
-    qres.innerHTML = hits.map((h, i) => `<li><a href="#${h.slug}" data-hit="${i}"${i === 0 ? ' class="on"' : ''}>${esc(h.label)}<small>${esc(h.sub)}</small></a></li>`).join('') || (t ? '<li><a>No match</a></li>' : '');
-    qres.hidden = !t;
+    const raw = q.value.trim(), ts = terms(raw);
+    hits = [];
+    if (ts.length) {
+      const all = s => ts.every(x => s.includes(x)), seen = new Set(), scored = [];
+      for (const x of index) { const l = x.label.toLowerCase(); if (all(l)) scored.push({ ...x, s: x.w * 100 + (l === ts.join(' ') ? 80 : l.startsWith(ts[0]) ? 30 : 0) - l.length / 10 }); }
+      for (const p of W.pages) {
+        const txt = plain[p.slug]; if (!all(txt)) continue;
+        const n = ts.reduce((a, x) => a + Math.min(txt.split(x).length - 1, 20), 0), inTitle = ts.filter(x => p.title.toLowerCase().includes(x)).length;
+        scored.push({ slug: p.slug, label: p.title, sub: kindOf(p) + ' · mentions it', go: '', s: inTitle * 40 + n });
+      }
+      for (const h of scored.sort((a, b) => b.s - a.s)) { const k = h.slug + '#' + h.go; if (!seen.has(k) && !(h.go === '' && seen.has(h.slug + '#'))) { seen.add(k); hits.push(h); } if (hits.length === 15) break; }
+    }
+    qres.innerHTML = hits.map((h, i) => `<li><a href="#${h.slug}" data-hit="${i}"${i === 0 ? ' class="on"' : ''}>${esc(h.label)}<small>${esc(h.sub)}</small></a></li>`).join('') || (raw ? '<li><a>No match. Try fewer or shorter words.</a></li>' : '');
+    qres.hidden = !raw;
   });
   const pick = h => { qres.hidden = true; q.value = ''; if (location.hash.slice(1) !== h.slug) { location.hash = h.slug; } view = 'art'; render(); if (h.go) setTimeout(() => { const el = document.getElementById(h.go); if (el) { el.closest('details')?.setAttribute('open', ''); el.scrollIntoView({ block: 'start' }); } }, 30); };
   q.addEventListener('keydown', e => { if (e.key === 'Enter' && hits[0]) { e.preventDefault(); pick(hits[0]); } if (e.key === 'Escape') { qres.hidden = true; } });
