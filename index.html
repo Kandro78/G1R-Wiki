@@ -338,7 +338,7 @@ dialog.lb::backdrop { background: var(--shade); }
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-<script src="content.js?v=4307266e13"></script>
+<script src="content.js?v=914447ce2b"></script>
 <script>
 (() => {
   const W = window.WIKI, $ = s => document.querySelector(s);
@@ -356,6 +356,7 @@ dialog.lb::backdrop { background: var(--shade); }
     if (!f && href.length > 1) return `<a href="${esc(href)}" data-go="${esc(href.slice(1))}">${text}</a>`;
     if (fileSlug[f]) return `<a href="#${fileSlug[f]}">${text}</a>`;
     if (/^https?:/.test(href)) return `<a href="${esc(href)}" target="_blank" rel="noopener">${text}</a>`;
+    if (/^[\w-]+\.html$/.test(f)) return `<a href="${esc(href)}">${text}</a>`;  // a page of its own next to index.html (map.html)
     return `<span class="path" title="${esc(href)} (file in the repo, not part of the site)">${text}</span>`;
   };
   renderer.table = (header, body) => `<div class="table-wrap"><table class="wikitable"><thead>${header}</thead><tbody>${body}</tbody></table></div>`;
